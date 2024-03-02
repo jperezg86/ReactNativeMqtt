@@ -5,6 +5,7 @@ import Botonera, { LED_STATUS } from './components/botonera/Botonera'
 import Widget from './components/widget/Widget'
 import { useState } from 'react'
 import { Client, Message } from 'paho-mqtt';
+import { MQTT_HOST, MQTT_USERNAME, MQTTT_PASSWORD } from "@env"
 
 export default function App() {
   const [appState, setAppState] = useState({
@@ -14,15 +15,15 @@ export default function App() {
   })
 
   const clientMqtt = useRef(
-    new Client(process.env.MQTT_HOST, 'mobile-app-' + new Date().getTime())
+    new Client(MQTT_HOST, 'mobile-app-' + new Date().getTime())
   )
 
   useEffect(() => {
-    console.log(process.env.MQTT_HOST, process.env.MQTT_USERNAME)
+    console.log(MQTT_HOST, MQTT_USERNAME)
     clientMqtt.current.connect({
       useSSL: true,
-      userName: process.env.MQTT_USERNAME,
-      password: process.env.MQTTT_PASSWORD,
+      userName: MQTT_USERNAME,
+      password: MQTTT_PASSWORD,
       onSuccess: () => {
         console.log('Conectado al broker')
         clientMqtt.current.subscribe('ledStatus')
