@@ -19,7 +19,7 @@ export default function App() {
   )
 
   useEffect(() => {
-    console.log(MQTT_HOST, MQTT_USERNAME)
+    console.log(MQTT_HOST || 'no-var', MQTT_USERNAME || 'novar')
     clientMqtt.current.connect({
       useSSL: true,
       userName: MQTT_USERNAME,
@@ -28,7 +28,7 @@ export default function App() {
         console.log('Conectado al broker')
         clientMqtt.current.subscribe('ledStatus')
         clientMqtt.current.subscribe('temperature')
-        clientMqtt.current.subscribe('humedity')
+        clientMqtt.current.subscribe('humidity')
       },
       onFailure: (message) => {
         console.log("No se pudo conectar al broker")
@@ -45,10 +45,10 @@ export default function App() {
     clientMqtt.current.onMessageArrived = (message) => {
       switch(message.destinationName) {
         case 'temperature':
-          setAppState({...appState, temperature: `${message.payloadString} °C`})
+          setAppState({...appState, temperature: `${message.payloadString.substring(0,5)} °C`})
           break;
-        case 'humedity':
-          setAppState({...appState, humedity: `${message.payloadString} %`})
+        case 'humidity':
+          setAppState({...appState, humedity: `${message.payloadString.substring(0,5)} %`})
           break;
         case 'ledStatus':
           setAppState({...appState, ledStatus: message.payloadString})
